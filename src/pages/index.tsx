@@ -109,7 +109,7 @@ export default function Home() {
               <Link variant="body2" href="https://panasonic-connect.atlassian.net/wiki/spaces/Cameleo/pages/692421804/AI">{'向き先変更手順'}</Link>
               <Typography variant='body1'>サーバー向き先変更要素</Typography>
               <Typography variant='body1'>・IP Address:カメラの IP Address。（ポートが80以外ならポート番号も必要）</Typography>
-              <Typography variant='body1'>・App Install ID: アプリケーションのID</Typography>
+              <Typography variant='body1'>・App Install ID: アプリケーションのID *アプリ更新ごとにIDが変わる</Typography>
               <Typography variant='body1'>・サーバーURL: 設定したいサーバーのURLをBase64 エンコードしたもの</Typography>
             </Stack>
             <Box>

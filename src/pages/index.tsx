@@ -101,7 +101,7 @@ export default function Home() {
           <Typography variant='h5' >手順</Typography>
         </Box>
           <Box sx={{marginTop:5, width:'100%'}}>
-          <Stack direction='row' spacing={2} sx={{alignContent: 'center', justifyContent: 'flex-end'}}>
+          <Stack direction='row' spacing={2} sx={{alignContent: 'center', justifyContent: 'center'}}>
             <Stack spacing={2}  direction="column" >
               <Typography variant='body1'>1. カメラのCameleo登録画面のURLをコピーして貼り付ける</Typography>
               <Typography variant='body1'>2. カメラ登録する(カメラ登録しないとエラーになる)</Typography>
@@ -113,9 +113,9 @@ export default function Home() {
               <Typography variant='body1'>・App Install ID: アプリケーションのID</Typography>
               <Typography variant='body1'>・サーバーURL: 設定したいサーバーのURLをBase64 エンコードしたもの</Typography>
             </Stack>
-            <ImageListItem sx={{width: '50%'}}>
-              <Image src="/スクリーンショット 2024-12-16 184952.png" alt="cameleo_url" style={{ width: '60%' }}/>
-            </ImageListItem>
+            <Box>
+              <Image src="/urlCopyTemp.png" alt="cameleo_url" width="360" height="150" />
+            </Box>
             </Stack>
         </Box>
     </div>

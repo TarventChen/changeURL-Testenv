@@ -1,114 +1,122 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+import { Box, Stack, Typography, InputAdornment, IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { useState, useEffect } from 'react';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ImageListItem from '@mui/material/ImageListItem';
+import Link from '@mui/material/Link';
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  
+  const [cameraUrl, setCameraUrl] = useState('');
+  const [destinationUrl, setDestinationUrl] = useState('');
+  const [changeSTGFlag, setChangeSTGFlag] = useState(false);
+  const [changeDev2Flag, setChangeDev2Flag] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const transformSTGUrl = (url: string) => {
+    const ipMatch = url.match(/http:\/\/([^\/]+)/);
+    const installIdMatch = url.match(/installId=([^&]+)/);
+    if (ipMatch && installIdMatch) {
+      const ip = ipMatch[1];
+      const installId = installIdMatch[1];
+      const newUrl = `http://${ip}/cgi-bin/adam.cgi?Language=1&methodName=sendDataToAdamApplication&installId=${installId}&s_appDataType=10&s_appData=c3RnLW53Yy5lLWNvbm5lY3RpbmctZnV0dXJlLm5ldA==`;
+      return newUrl;
+    }
+    return url;
+  };
+
+  const transformDev2Url = (url: string) => {
+    const ipMatch = url.match(/http:\/\/([^\/]+)/);
+    const installIdMatch = url.match(/installId=([^&]+)/);
+    if (ipMatch && installIdMatch) {
+      const ip = ipMatch[1];
+      const installId = installIdMatch[1];
+      const newUrl = `http://${ip}/cgi-bin/adam.cgi?Language=1&methodName=sendDataToAdamApplication&installId=${installId}&s_appDataType=10&s_appData=ZGV2Mi1ud2MuZS1jb25uZWN0aW5nLWZ1dHVyZS5uZXQ=`;
+      return newUrl;
+    }
+    return url;
+  };
+  const handleButtonClick_STG = () => {
+    const newUrl = transformSTGUrl(cameraUrl);
+    const regex = /^http:\/\/[^\/]+\/cgi-bin\/adam.cgi\?Language=1&methodName=sendDataToAdamApplication&installId=[^&]+&s_appDataType=10&s_appData=c3RnLW53Yy5lLWNvbm5lY3RpbmctZnV0dXJlLm5ldA==$/;
+    if (!regex.test(newUrl)) {
+      alert('カメラのURLを確認してください。');
+      return;
+    }
+    setDestinationUrl(transformSTGUrl(cameraUrl));
+    setChangeDev2Flag(false);
+    setChangeSTGFlag(true);
+  };
+  const handleButtonClick_Dev2 = () => {
+    const newUrl = transformDev2Url(cameraUrl);
+    const regex = /^http:\/\/[^\/]+\/cgi-bin\/adam.cgi\?Language=1&methodName=sendDataToAdamApplication&installId=[^&]+&s_appDataType=10&s_appData=ZGV2Mi1ud2MuZS1jb25uZWN0aW5nLWZ1dHVyZS5uZXQ=$/;
+    if (!regex.test(newUrl)) {
+      alert('カメラのURLを確認してください。');
+      return;
+    }
+    setDestinationUrl(transformDev2Url(cameraUrl));
+    setChangeSTGFlag(false);
+    setChangeDev2Flag(true);
+  }
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(destinationUrl);
+  };
+
+  return (
+    <div>
+      <Box sx={{width: '90%', textAlign: 'center'}}>
+        <Typography variant="h4" sx={{marginTop: 5}}>テスト環境向き先変更</Typography>
+        {changeSTGFlag && <Typography variant="h6" sx={{marginTop: 5}}>STG向き先変更しました</Typography>}
+        {changeDev2Flag && <Typography variant="h6" sx={{marginTop: 5}}>Dev2向き先変更しました</Typography>}
+        <Stack  marginTop={10} spacing={5} direction="row" sx={{alignContent: 'center', justifyContent: 'center'}}>
+          <TextField
+              id="filled-multiline-static"
+              label="カメラ登録URL"
+              multiline
+              rows={10}
+              defaultValue=""
+              variant="filled"
+              value={cameraUrl}
+              onChange={(e) => setCameraUrl(e.target.value)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <Stack spacing={2}  direction="column" sx={{alignContent: 'center', justifyContent: 'center'}}>
+            <Button variant="contained" onClick={handleButtonClick_STG}>STG</Button>
+            <Button variant="contained" onClick={handleButtonClick_Dev2}>Dev2</Button>
+          </Stack>
+          <TextField
+              id="outlined-multiline-static"
+              label="向き先URL"
+              multiline
+              rows={10}
+              defaultValue=""
+              variant="filled"
+              value={destinationUrl}
+             />
+            
+        </Stack>
+        {(changeSTGFlag||changeDev2Flag) && <IconButton onClick={handleCopyClick} sx={{left:250, top:-268}}><ContentCopyIcon /></IconButton>}
+      </Box>
+        <Box sx={{marginTop:10, width:'90%', textAlign: 'center'}}>
+          <Typography variant='h5' >手順</Typography>
+        </Box>
+          <Box sx={{marginTop:5, width:'100%'}}>
+          <Stack direction='row' spacing={2} sx={{alignContent: 'center', justifyContent: 'flex-end'}}>
+            <Stack spacing={2}  direction="column" >
+              <Typography variant='body1'>1. カメラのCameleo登録画面のURLをコピーして貼り付ける</Typography>
+              <Typography variant='body1'>2. カメラ登録する(カメラ登録しないとエラーになる)</Typography>
+              <Typography variant='body1'>3. 登録したら、生成した向き先を変更する</Typography>
+              <Typography variant='body1'>------------------------------------</Typography>
+              <Link variant="body2" href="https://panasonic-connect.atlassian.net/wiki/spaces/Cameleo/pages/692421804/AI">{'向き先変更手順'}</Link>
+              <Typography variant='body1'>サーバー向き先変更要素</Typography>
+              <Typography variant='body1'>・IP Address:カメラの IP Address。（ポートが80以外ならポート番号も必要）</Typography>
+              <Typography variant='body1'>・App Install ID: アプリケーションのID</Typography>
+              <Typography variant='body1'>・サーバーURL: 設定したいサーバーのURLをBase64 エンコードしたもの</Typography>
+            </Stack>
+            <ImageListItem sx={{width: '50%'}}>
+              <img src="/スクリーンショット 2024-12-16 184952.png" alt="cameleo_url" style={{ width: '60%' }}/>
+            </ImageListItem>
+            </Stack>
+        </Box>
     </div>
   );
 }

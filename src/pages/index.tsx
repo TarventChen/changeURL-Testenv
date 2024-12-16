@@ -1,10 +1,11 @@
-import { Box, Stack, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Box, Stack, Typography, IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ImageListItem from '@mui/material/ImageListItem';
 import Link from '@mui/material/Link';
+import Image from 'next/image';
 export default function Home() {
   
   const [cameraUrl, setCameraUrl] = useState('');
@@ -113,7 +114,7 @@ export default function Home() {
               <Typography variant='body1'>・サーバーURL: 設定したいサーバーのURLをBase64 エンコードしたもの</Typography>
             </Stack>
             <ImageListItem sx={{width: '50%'}}>
-              <img src="/スクリーンショット 2024-12-16 184952.png" alt="cameleo_url" style={{ width: '60%' }}/>
+              <Image src="/スクリーンショット 2024-12-16 184952.png" alt="cameleo_url" style={{ width: '60%' }}/>
             </ImageListItem>
             </Stack>
         </Box>
